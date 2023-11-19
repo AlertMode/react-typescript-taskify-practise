@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useReducer } from 'react'
 import { Todo } from './model'
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai'
 import { MdDone } from 'react-icons/md'
+import TodoReducer from './TodoReducer'
 import './styles.css'
 
 type Props = {
@@ -14,6 +15,8 @@ const SingleTodo = ({ todo, todos, setTodos }: Props) => {
     const [edit, setEdit] = useState<boolean>(false);
     const [editTodo, setEditTodo] = useState<string>(todo.todo);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const [state, dispatch] = useReducer(TodoReducer, todos);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -30,7 +33,10 @@ const SingleTodo = ({ todo, todos, setTodos }: Props) => {
     };
 
     const handleDelete = (id: number) => {
-        setTodos(todos.filter((todo) => todo.id !== id));
+        console.log('ID to Del: ' + id)
+        dispatch({ type: 'remove', payload: id })
+        setTodos(state)
+        console.log([...state])
     };
 
     const handleDone = (id: number) => {
